@@ -1,1 +1,29 @@
+using System;
 
+class Product
+{
+  public int Id;
+  public string Name;
+  public double Price;
+  public int RemainingStock;
+
+  public void DisplayProduct()
+  {
+    Console.WriteLine(($"{Id}. {Name} - ₱{Price} (Stock: {RemainingStock})");
+  }
+
+  public double GetItemTotal(int quantity)
+  {
+    return Price * quantity;
+  }
+
+  public bool HasEnoughStock(int quantity)
+  {
+    return quantity <= RemainingStock;
+  }
+
+  public void DeductStock(int quantity)
+  {
+     RemainingStock -= quantity;  
+  }
+                          
