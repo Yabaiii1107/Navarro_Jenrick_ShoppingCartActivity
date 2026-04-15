@@ -6,10 +6,15 @@ class Product
   public string Name;
   public double Price;
   public int RemainingStock;
+  
+  public void DisplayStock()
+  {
+    Console.WriteLine($"{Id}. {Name} - \n(Stock Left: {RemainingStock})");
+  }
 
   public void DisplayProduct()
   {
-    Console.WriteLine(($"{Id}. {Name} - ₱{Price} (Stock: {RemainingStock})");
+    Console.WriteLine($"{Id}. {Name} - \nPrice: ₱{Price} \nStock: {RemainingStock}");
   }
 
   public double GetItemTotal(int quantity)
@@ -120,8 +125,8 @@ class Program
             selected.DeductStock(qty);
             Console.WriteLine("Item added to cart!");
 
-           Console.Write("Add another item? (Y/N): ");
-           choice = Console.ReadLine();
+            Console.Write("Add another item? (Y/N): ");
+            choice = Console.ReadLine();
 
             if (choice.ToUpper()== "N")
             {
@@ -142,7 +147,7 @@ class Program
                 Console.WriteLine("\n=== UPDATED STOCK ===");
                 for (int i = 0; i < store.Length; i++)
                 {
-                    store[i].DisplayProduct();
+                    store[i].DisplayStock();
                 }
 
                 Console.WriteLine("\nProgram End.");
