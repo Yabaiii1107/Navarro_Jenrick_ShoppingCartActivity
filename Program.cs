@@ -47,4 +47,76 @@ class Program
             new Product{ Id=5, Name="ANTEC ATOM B650 650W 80+ BRONZE Non-Modular True Rated Power Supply", Price=3087, RemainingStock=2 },
             new Product{ Id=6, Name="ADATA 1TB LEGEND 710 M.2 PCIe NVMe (ALEG-710-1TCS) Solid State Drive", Price=9500, RemainingStock=4 },
         };
+        CartItem[] cart = new CartItem[5];
+        int cartCount = 0;
+
+        string choice = "Y";
+
+        do
+        {
+            Console.WriteLine("\n=== STORE MENU ===");
+            for (int i = 0; i < store.Length; i++)
+            {
+                store[i].DisplayProduct();
+            }
+
+            Console.Write("Enter product number: ");
+            if (!int.TryParse(Console.ReadLine(), out int productNum) || productNum < 1 || productNum > store.Length)
+            {
+                Console.WriteLine("Invalid product number.");
+                continue;
+            }
+
+            Product selected = store[productNum - 1];
+
+            if (selected.RemainingStock == 0)
+            {
+                Console.WriteLine("Product is out of stock.");
+                continue;
+            }
+
+            Console.Write("Enter quantity: ");
+            if (!int.TryParse(Console.ReadLine(), out int qty) || qty <= 0)
+            {
+                Console.WriteLine("Invalid quantity.");
+                continue;
+            }
+
+            if (!selected.HasEnoughStock(qty))
+            {
+                Console.WriteLine("Not enough stock available.");
+                continue;
+            }
+
+            bool found = false;
+            for (int i = 0; i < cartCount; i++)
+            {
+                if (cart[i].product.Id == selected.Id)
+                {
+                    cart[i].quantity += qty;
+                    cart[i].subtotal += selected.GetItemTotal(qty);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                if (cartCount >= cart.Length)
+                {
+                    Console.WriteLine("Cart is full.");
+                    continue;
+                }
+
+                cart[cartCount] = new CartItem
+                {
+                    product = selected,
+                    quantity = qty,
+                    subtotal = selected.GetItemTotal(qty)
+                };
+                cartCount++;
+            }
+
+            selected.DeductStock(qty);
+            Console.WriteLine("Item added to cart!");
                           
