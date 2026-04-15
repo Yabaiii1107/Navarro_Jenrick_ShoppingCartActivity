@@ -109,9 +109,52 @@ class Program
             {
                 if (cartCount >= cart.Length)
                 {
-                    Console.WriteLine("Cart is full.");
-                    continue;
+                    Console.WriteLine("CART IS FULL!");
+                  
+                    Console.Write("\nDo you want to see your receipt? (Y/N): ");
+                    string choice1 = Console.ReadLine();
+
+                      if (choice1.ToUpper() == "Y")
+                      {
+                        double grandTotal = 0;
+                        Console.WriteLine("\n=== RECEIPT ===");
+
+                        for (int i = 0; i < cartCount; i++)
+                        {
+                          Console.WriteLine($"x{cart[i].quantity} {cart[i].product.Name} = ₱{cart[i].subtotal}");
+                          grandTotal += cart[i].subtotal;
+                        }
+
+                        Console.WriteLine($"Grand Total: ₱{grandTotal}");
+
+                        double discount = 0;
+                        if (grandTotal >= 5000)
+                        {
+                          discount = grandTotal * 0.10;
+                          Console.WriteLine($"Discount: ₱{discount}");
+                        }
+
+                        double finalTotal = grandTotal - discount;
+                        Console.WriteLine($"Final Total: ₱{finalTotal}");
+
+                        Console.WriteLine("\n=== UPDATED STOCK ===");
+                        for (int i = 0; i < store.Length; i++)
+                        {
+                          store[i].DisplayStock();
+                        }
+
+                        Console.WriteLine("\nProgram End.");
+                        Console.ReadKey();
+                        return;
+                    }
+                    else
+                    {
+                      Console.WriteLine("Program End.");
+                      Console.ReadKey();
+                      return;
+                    }
                 }
+            }
 
                 cart[cartCount] = new CartItem
                 {
@@ -120,7 +163,6 @@ class Program
                     subtotal = selected.GetItemTotal(qty)
                 };
                 cartCount++;
-            }
 
             selected.DeductStock(qty);
             Console.WriteLine("Item added to cart!");
@@ -141,6 +183,13 @@ class Program
 
                 Console.WriteLine($"Grand Total: ₱{grandTotal}");
               
+                double discount = 0;
+                if (grandTotal >= 5000)
+                {
+                    discount = grandTotal * 0.10;
+                    Console.WriteLine($"Discount: ₱{discount}");
+                }
+
                 double finalTotal = grandTotal - discount;
                 Console.WriteLine($"Final Total: ₱{finalTotal}");
 
@@ -156,4 +205,4 @@ class Program
         } while (choice.ToUpper() == "Y");
     }
 }
-                          
+}                          
