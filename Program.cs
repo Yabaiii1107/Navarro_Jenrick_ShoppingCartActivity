@@ -119,4 +119,20 @@ class Program
 
             selected.DeductStock(qty);
             Console.WriteLine("Item added to cart!");
+
+           Console.Write("Add another item? (Y/N): ");
+           choice = Console.ReadLine();
+
+            if (choice.ToUpper()== "N")
+            {
+                double grandTotal = 0;
+                Console.WriteLine("\n=== RECEIPT ===");
+
+                for (int i = 0; i < cartCount; i++)
+                {
+                    Console.WriteLine($"x{cart[i].quantity} {cart[i].product.Name} = ₱{cart[i].subtotal}");
+                    grandTotal += cart[i].subtotal;
+                }
+
+                Console.WriteLine($"Grand Total: ₱{grandTotal}");
                           
