@@ -135,4 +135,20 @@ class Program
                 }
 
                 Console.WriteLine($"Grand Total: ₱{grandTotal}");
+              
+                double finalTotal = grandTotal - discount;
+                Console.WriteLine($"Final Total: ₱{finalTotal}");
+
+                Console.WriteLine("\n=== UPDATED STOCK ===");
+                for (int i = 0; i < store.Length; i++)
+                {
+                    store[i].DisplayProduct();
+                }
+
+                Console.WriteLine("\nProgram End.");
+            }
+        
+        } while (choice.ToUpper() == "Y");
+    }
+}
                           
