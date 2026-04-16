@@ -144,13 +144,11 @@ class Program
                         }
 
                         Console.WriteLine("\nProgram End.");
-                        Console.ReadKey();
                         return;
                     }
                     else
                     {
                       Console.WriteLine("Program End.");
-                      Console.ReadKey();
                       return;
                     }
                 }
