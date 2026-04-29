@@ -2,36 +2,28 @@ using System;
 
 class Product
 {
-  public int Id;
-  public string Name;
-  public double Price;
-  public int RemainingStock;
-  
-  public void DisplayStock()
-  {
-    Console.WriteLine($"{Id}. {Name} - \n(Stock Left: {RemainingStock})");
-  }
+    public int Id;
+    public string Name;
+    public double Price;
+    public int RemainingStock;
 
-  public void DisplayProduct()
-  {
-    Console.WriteLine($"{Id}. {Name} - \nPrice: ₱{Price} \nStock: {RemainingStock}");
-  }
+    public void DisplayStock()
+    {
+        Console.WriteLine($"{Id}. {Name} - (Stock Left: {RemainingStock})");
+    }
 
-  public double GetItemTotal(int quantity)
-  {
-    return Price * quantity;
-  }
+    public void DisplayProduct()
+    {
+        Console.WriteLine($"{Id}. {Name} - Price: ₱{Price} | Stock: {RemainingStock}");
+    }
 
-  public bool HasEnoughStock(int quantity)
-  {
-    return quantity <= RemainingStock;
-  }
+    public double GetItemTotal(int quantity) => Price * quantity;
 
-  public void DeductStock(int quantity)
-  {
-     RemainingStock -= quantity;  
-  }
-                      
+    public bool HasEnoughStock(int quantity) => quantity <= RemainingStock;
+
+    public void DeductStock(int quantity) => RemainingStock -= quantity;
+}
+
 class CartItem
 {
     public Product product;
@@ -41,6 +33,45 @@ class CartItem
 
 class Program
 {
+    static void PrintReceipt(CartItem[] cart, int cartCount, Product[] store)
+    {
+        double grandTotal = 0;
+
+        Console.WriteLine("\n=== RECEIPT ===");
+
+        for (int i = 0; i < cartCount; i++)
+        {
+            Console.WriteLine($"x{cart[i].quantity} {cart[i].product.Name} = ₱{cart[i].subtotal}");
+            grandTotal += cart[i].subtotal;
+        }
+
+        Console.WriteLine($"Grand Total: ₱{grandTotal}");
+
+        double discount = (grandTotal >= 5000) ? grandTotal * 0.10 : 0;
+        if (discount > 0)
+            Console.WriteLine($"Discount: ₱{discount}");
+
+        Console.WriteLine($"Final Total: ₱{grandTotal - discount}");
+
+        Console.WriteLine("\n=== UPDATED STOCK ===");
+        foreach (var item in store)
+            item.DisplayStock();
+    }
+
+    static string GetYesNo(string message)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            string input = Console.ReadLine().Trim().ToUpper();
+
+            if (input == "Y" || input == "N")
+                return input;
+
+            Console.WriteLine("Invalid input. Please enter Y or N only.");
+        }
+    }
+
     static void Main()
     {
         Product[] store = new Product[]
@@ -52,6 +83,7 @@ class Program
             new Product{ Id=5, Name="ANTEC ATOM B650 650W 80+ BRONZE Non-Modular True Rated Power Supply", Price=3087, RemainingStock=2 },
             new Product{ Id=6, Name="ADATA 1TB LEGEND 710 M.2 PCIe NVMe (ALEG-710-1TCS) Solid State Drive", Price=9500, RemainingStock=4 },
         };
+
         CartItem[] cart = new CartItem[5];
         int cartCount = 0;
 
@@ -60,15 +92,13 @@ class Program
         do
         {
             Console.WriteLine("\n=== STORE MENU ===");
-            for (int i = 0; i < store.Length; i++)
-            {
-                store[i].DisplayProduct();
-            }
+            foreach (var item in store)
+                item.DisplayProduct();
 
             Console.Write("Enter product number: ");
             if (!int.TryParse(Console.ReadLine(), out int productNum) || productNum < 1 || productNum > store.Length)
             {
-                Console.WriteLine("Invalid product number.");
+                Console.WriteLine("Invalid product.");
                 continue;
             }
 
@@ -76,7 +106,7 @@ class Program
 
             if (selected.RemainingStock == 0)
             {
-                Console.WriteLine("Product is out of stock.");
+                Console.WriteLine("Out of stock.");
                 continue;
             }
 
@@ -89,7 +119,7 @@ class Program
 
             if (!selected.HasEnoughStock(qty))
             {
-                Console.WriteLine("Not enough stock available.");
+                Console.WriteLine("Not enough stock.");
                 continue;
             }
 
@@ -110,97 +140,26 @@ class Program
                 if (cartCount >= cart.Length)
                 {
                     Console.WriteLine("CART IS FULL!");
-                  
-                    Console.Write("\nDo you want to see your receipt? (Y/N): ");
-                    string choice1 = Console.ReadLine();
-
-                      if (choice1.ToUpper() == "Y")
-                      {
-                        double grandTotal = 0;
-                        Console.WriteLine("\n=== RECEIPT ===");
-
-                        for (int i = 0; i < cartCount; i++)
-                        {
-                          Console.WriteLine($"x{cart[i].quantity} {cart[i].product.Name} = ₱{cart[i].subtotal}");
-                          grandTotal += cart[i].subtotal;
-                        }
-
-                        Console.WriteLine($"Grand Total: ₱{grandTotal}");
-
-                        double discount = 0;
-                        if (grandTotal >= 5000)
-                        {
-                          discount = grandTotal * 0.10;
-                          Console.WriteLine($"Discount: ₱{discount}");
-                        }
-
-                        double finalTotal = grandTotal - discount;
-                        Console.WriteLine($"Final Total: ₱{finalTotal}");
-
-                        Console.WriteLine("\n=== UPDATED STOCK ===");
-                        for (int i = 0; i < store.Length; i++)
-                        {
-                          store[i].DisplayStock();
-                        }
-
-                        Console.WriteLine("\nProgram End.");
-                        return;
-                    }
-                    else
-                    {
-                      Console.WriteLine("Program End.");
-                      return;
-                    }
+                    break; 
                 }
-            }
 
-                cart[cartCount] = new CartItem
+                cart[cartCount++] = new CartItem
                 {
                     product = selected,
                     quantity = qty,
                     subtotal = selected.GetItemTotal(qty)
                 };
-                cartCount++;
+            }
 
             selected.DeductStock(qty);
-            Console.WriteLine("Item added to cart!");
+            Console.WriteLine("Item added!");
 
-            Console.Write("Add another item? (Y/N): ");
-            choice = Console.ReadLine();
+            choice = GetYesNo("Add another item? (Y/N): ");
 
-            if (choice.ToUpper()== "N")
-            {
-                double grandTotal = 0;
-                Console.WriteLine("\n=== RECEIPT ===");
+        } while (choice == "Y");
 
-                for (int i = 0; i < cartCount; i++)
-                {
-                    Console.WriteLine($"x{cart[i].quantity} {cart[i].product.Name} = ₱{cart[i].subtotal}");
-                    grandTotal += cart[i].subtotal;
-                }
+        PrintReceipt(cart, cartCount, store);
 
-                Console.WriteLine($"Grand Total: ₱{grandTotal}");
-              
-                double discount = 0;
-                if (grandTotal >= 5000)
-                {
-                    discount = grandTotal * 0.10;
-                    Console.WriteLine($"Discount: ₱{discount}");
-                }
-
-                double finalTotal = grandTotal - discount;
-                Console.WriteLine($"Final Total: ₱{finalTotal}");
-
-                Console.WriteLine("\n=== UPDATED STOCK ===");
-                for (int i = 0; i < store.Length; i++)
-                {
-                    store[i].DisplayStock();
-                }
-
-                Console.WriteLine("\nProgram End.");
-            }
-        
-        } while (choice.ToUpper() == "Y");
+        Console.WriteLine("\nProgram End.");
     }
 }
-}                          
