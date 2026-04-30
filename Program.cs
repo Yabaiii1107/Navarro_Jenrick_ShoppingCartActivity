@@ -1,9 +1,15 @@
-using System;
+using system
 
 namespace ConsoleApp5
 {
     class Program
     {
+        static void DisplayCartHeader
+        {
+            Console.WriteLine("\nNo  | Name                      | Qty |   Price | Subtotal");
+            Console.WriteLine("--------------------------------------------------------------------------");
+        }
+
         static void Main(string[] args)
         {
             Product[] products = new Product[]
@@ -22,14 +28,21 @@ namespace ConsoleApp5
             CartItem[] cart = new CartItem[15];
             int cartCount = 0;
             int menu;
+            bool showProducts = true;
 
             do
             {
-                Console.WriteLine("\nID  | Name                      | Category           |   Price | Stock");
-                Console.WriteLine("--------------------------------------------------------------------------");
-                for (int i = 0; i < products.Length; i++)
+                 if (showProducts)
                 {
-                    products[i].DisplayProduct();
+                    Console.WriteLine("\nID  | Name                      | Category           |   Price | Stock");
+                    Console.WriteLine("--------------------------------------------------------------------------");
+
+                    for (int i = 0; i < products.Length; i++)
+                    {
+                        products[i].DisplayProduct();
+                    }
+
+                    showProducts = false; 
                 }
 
                 Console.WriteLine("\n=== MAIN MENU ===");
@@ -43,7 +56,13 @@ namespace ConsoleApp5
                 Console.Write("Enter Choice (1-6): ");
                 if (!int.TryParse(Console.ReadLine(), out menu))
                 {
-                    Console.WriteLine("Invalid Input. Input must be a number ranging from 1-6 only.\n");
+                    Console.WriteLine("Invalid Input. Input must be a number ranging from 1-6 only.");
+                    continue;
+                }
+
+                if (menu > 6)
+                {
+                    Console.WriteLine("Invalid Input. Input must be a number ranging from 1-6 only.");
                     continue;
                 }
 
@@ -53,6 +72,7 @@ namespace ConsoleApp5
                         int id;
                         int index;
                         string addMore;
+
                         Console.WriteLine("\n=== ADD A PRODUCT ===");
                         do
                         {
@@ -81,7 +101,6 @@ namespace ConsoleApp5
                                     Console.WriteLine("Product Not Found.\n");
                                     continue;
                                 }
-
                                 break;
                             }
 
@@ -89,7 +108,7 @@ namespace ConsoleApp5
 
                             while (true)
                             {
-                                Console.Write("Enter Quantity: ");
+                                Console.Write("\nEnter Quantity: ");
                                 if (!int.TryParse(Console.ReadLine(), out qty) || qty == 0)
                                 {
                                     Console.WriteLine("Invalid Quantity. Please Enter a Valid Quantity.");
@@ -98,7 +117,7 @@ namespace ConsoleApp5
 
                                 if (!products[index].HasEnoughStock(qty))
                                 {
-                                    Console.WriteLine("Not Enough Stock.");
+                                    Console.WriteLine("Not Enough Stock.\n");
                                     continue;
                                 }
 
@@ -118,20 +137,232 @@ namespace ConsoleApp5
                             while (true)
                             {
                                 Console.Write("\nDo You Want To Add More Items?(Y/N): ");
-                                addMore = Console.ReadLine().ToUpper().Trim();
+                                addMore = Console.ReadLine();
+
+                                addMore = addMore.ToUpper().Trim();
+
                                 if (addMore == "Y" || addMore == "N")
+                                {
                                     break;
+                                }
 
-                                Console.WriteLine("Invalid Input. Please Enter Y or N only.\n");
+                                Console.WriteLine("Invalid Input. Please Enter Y or N.");
                             }
-
                         } while (addMore == "Y");
                         break;
-                }
 
-            } while (menu != 6);
+                     case 2:
+                        int cartMenu;
+                        do
+                        {
+                            Console.WriteLine("\n=== CART MENU ===");
+                            Console.WriteLine("1. View Cart");
+                            Console.WriteLine("2. Remove Cart Item");
+                            Console.WriteLine("3. Update Quantity");
+                            Console.WriteLine("4. Clear Cart");
+                            Console.WriteLine("5. Back");
+
+                            Console.Write("Enter Choice(1-5): ");
+                            if (!int.TryParse(Console.ReadLine(), out cartMenu))
+                            {
+                                Console.WriteLine("Invalid Input. Input must be a number ranging from 1-5 only.");
+                                continue;
+                            }
+
+                            if (cartMenu > 5)
+                            {
+                                Console.WriteLine("Invalid Input. Input must be a number ranging from 1-5 only.");
+                            }
+
+                            switch (cartMenu)
+                            {
+                                case 1:
+                                    Console.WriteLine("\n=== VIEW CART ===");
+
+                                    if (cartCount == 0)
+                                    {
+                                        Console.WriteLine("Your Cart is Empty.");
+                                        break;
+                                    }
+
+                                    DisplayCartHeader();
+                                    for (int i = 0; i < cartCount; i++)
+                                    {
+                                        cart[i].DisplayCartItem(i);
+                                    }
+                                    break;
+
+                                case 2:
+                                    Console.WriteLine("\n=== REMOVE CART ITEM ===");
+                                    if (cartCount == 0)
+                                    {
+                                      Console.WriteLine("Your Cart is Empty.");
+                                      break;
+                                    }
+
+                                    DisplayCartHeader();
+                                    for (int i = 0; i < cartCount; i++)
+                                    {
+                                        cart[i].DisplayCartItem(i);
+                                    }
+
+                                    int removeIndex;
+
+                                    while (true)
+                                    {
+                                        Console.Write("\nEnter Item Number to Remove: ");
+                                        if (!int.TryParse(Console.ReadLine(), out removeIndex))
+                                        {
+                                            Console.WriteLine("Invalid Input. Please Enter a Number.");
+                                            continue;
+                                        }
+
+                                        removeIndex--;
+
+                                        if (removeIndex < 0 || removeIndex >= cartCount)
+                                        {
+                                            Console.WriteLine("Invalid Item Number. Please Try Again.");
+                                            continue;
+                                        }
+
+                                        break;
+                                    }
+                                    cart[removeIndex].product.remainingStock += cart[removeIndex].quantity;
+
+                                    for (int i = removeIndex; i < cartCount; i++)
+                                    {
+                                        cart[i] = cart[i + 1];
+                                    }
+
+                                    cartCount--;
+                                    Console.WriteLine("\nItem is Removed Successfully.");
+                                    break;
+
+                                case 3:
+                                    int updateIndex;
+                                    int newQuantity;
+
+                                    Console.WriteLine("\n=== UPDATE QUANTITY ===");
+
+                                    if (cartCount == 0)
+                                    {
+                                        Console.WriteLine("Cart is Empty.");
+                                        break;
+                                    }
+
+                                    DisplayCartHeader();
+                                    for (int i = 0; i < cartCount; i++)
+                                    {
+                                        cart[i].DisplayCartItem(i);
+                                    }
+
+                                    while (true)
+                                    {
+                                        Console.Write("\nEnter Item Number To Update: ");
+
+                                        if (!int.TryParse(Console.ReadLine(), out updateIndex))
+                                        {
+                                            Console.WriteLine("Invalid Input. Please Enter a Number.");
+                                            continue;
+                                        }
+
+                                        updateIndex--;
+
+                                        if (updateIndex < 0 || updateIndex >= cartCount)
+                                        {
+                                            Console.WriteLine("Invalid Item Number. Please Try Again.");
+                                            continue;
+                                        }
+
+                                        break;
+                                    }
+
+                                    Product product = cart[updateIndex].product;
+
+                                    product.remainingStock += cart[updateIndex].quantity;
+
+                                    while (true)
+                                    {
+                                        Console.Write("Enter New Quantity: ");
+
+                                        if (!int.TryParse(Console.ReadLine(), out newQuantity))
+                                        {
+                                            Console.WriteLine("Invalid Input. Please Enter a Number.");
+                                            continue;
+                                        }
+
+                                        if (newQuantity <= 0)
+                                        {
+                                            Console.WriteLine("Quantity Must be Greater Than 0.");
+                                            continue;
+                                        }
+
+                                        if (!product.HasEnoughStock(newQuantity))
+                                        {
+                                            Console.WriteLine("Not enough stock.");
+
+                                            product.remainingStock -= cart[updateIndex].quantity;
+                                            continue;
+                                        }
+
+                                        break;
+                                    }
+
+                                    product.DeductStock(newQuantity);
+
+                                    cart[updateIndex].quantity = newQuantity;
+                                    cart[updateIndex].subTotal = newQuantity * product.price;
+
+                                    Console.WriteLine("Quantity Updated.");
+                                    break;
+
+                                case 4:
+                                    string sureChoice;
+                                    Console.WriteLine("\n=== CLEAR CART ===");
+                                    if (cartCount == 0)
+                                    {
+                                        Console.WriteLine("Cart is empty.");
+                                        break;
+                                    }
+
+                                    while (true)
+                                    {
+                                        Console.Write("Are you sure you want to remove all items in your cart?(Y/N): ");
+                                        sureChoice = Console.ReadLine().ToUpper().Trim();
+
+                                        if (sureChoice == "Y")
+                                        {
+                                            for (int i = 0; i < cartCount; i++)
+                                            {
+                                                cart[i].product.remainingStock += cart[i].quantity;
+                                            }
+
+                                            cartCount = 0;
+                                            Console.WriteLine("Cart cleared successfully.");
+                                            break;
+                                        }
+                                        else if (sureChoice == "N")
+                                            break;
+                                        else
+                                        {
+                                            Console.WriteLine("\nInvalid Input. Please Enter Y or N.\n");
+                                            continue;
+                                        }
+                                  
+                                    }
+                                    break;
+
+                                case 5:
+                                    Console.WriteLine("Returning to Main Menu...");
+                                    break;
+                            }
+                        } while (cartMenu != 5);
+                        break;
+                }
+            }while (menu != 6);
         }
-     class Product
+
+       class Product
         {
             public int id;
             public string name;
@@ -146,29 +377,32 @@ namespace ConsoleApp5
                 );
             }
 
-            public bool HasEnoughStock(int qty)
+            public bool HasEnoughStock (int qty)
             {
                 return remainingStock >= qty;
             }
 
-            public void DeductStock(int qty)
+            public void DeductStock (int qty)
             {
                 remainingStock -= qty;
             }
-
         }
-     class CartItem
-     {
-       public Product product;
-       public int quantity;
-       public double subTotal;
 
-       public void DisplayCartItem(int index)
-       {
-         Console.WriteLine(
-              $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
-         );
-       }
-     }
+        class CartItem
+        {
+            public Product product;
+            public int quantity;
+            public double subTotal;
+
+            public void DisplayCartItem (int index)
+            {
+                Console.WriteLine(
+                    $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
+                );
+            }
+        }
     }
-    }
+}
+        
+
+    
