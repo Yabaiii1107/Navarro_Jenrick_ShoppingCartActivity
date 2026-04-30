@@ -29,6 +29,9 @@ namespace ConsoleApp5
             int cartCount = 0;
             int menu;
             bool showProducts = true;
+            int receiptCounter = 1;
+            Order[] orders = new Order[50];
+            int orderCount = 0;
 
             do
             {
@@ -471,6 +474,157 @@ namespace ConsoleApp5
                             }
                         }
                         break;
+
+                     case 5:
+                        {
+                            Console.WriteLine("\n=== CHECKOUT ===");
+
+                            if (cartCount == 0)
+                            {
+                                Console.WriteLine("Cart is empty.");
+                                break;
+                            }
+
+                            double grandTotal = 0;
+
+                            DisplayCartHeader();
+                            for (int i = 0; i < cartCount; i++)
+                            {
+                                cart[i].DisplayCartItem(i);
+                                grandTotal += cart[i].subTotal;
+                            }
+
+                            double discount = (grandTotal >= 5000) ? grandTotal * 0.10 : 0;
+                            double finalTotal = grandTotal - discount;
+
+                            Console.WriteLine($"\nGrand Total: ₱{grandTotal:F2}");
+                            Console.WriteLine($"Discount: ₱{discount:F2}");
+                            Console.WriteLine($"Final Total: ₱{finalTotal:F2}");
+
+                            double payment;
+
+                            while (true)
+                            {
+                                Console.Write("Enter Payment: ");
+
+                                if (!double.TryParse(Console.ReadLine(), out payment))
+                                {
+                                    Console.WriteLine("Invalid input. Enter numeric value.");
+                                    continue;
+                                }
+
+                                if (payment < finalTotal)
+                                {
+                                    Console.WriteLine("Insufficient payment.");
+                                    continue;
+                                }
+
+                                break;
+                            }
+
+                            double change = payment - finalTotal;
+
+                            Console.WriteLine("\n=== RECEIPT ===");
+                            Console.WriteLine($"Receipt No: {receiptCounter:D4}");
+                            Console.WriteLine($"Date: {DateTime.Now}");
+
+                            for (int i = 0; i < cartCount; i++)
+                            {
+                                Console.WriteLine($"x{cart[i].quantity} {cart[i].product.name} = ₱{cart[i].subTotal:F2}");
+                            }
+
+                            Console.WriteLine($"Grand Total: ₱{grandTotal:F2}");
+                            Console.WriteLine($"Discount: ₱{discount:F2}");
+                            Console.WriteLine($"Final Total: ₱{finalTotal:F2}");
+                            Console.WriteLine($"Payment: ₱{payment:F2}");
+                            Console.WriteLine($"Change: ₱{change:F2}");
+
+                            orders[orderCount++] = new Order
+                            {
+                                receiptNumber = receiptCounter,
+                                date = DateTime.Now,
+                                finalTotal = finalTotal
+                            };
+
+                           
+                            receiptCounter++;
+
+                            cartCount = 0;
+
+                            bool lowStock = false;
+                            Console.WriteLine("\n=== LOW STOCK ALERT ===");
+                            for (int i = 0; i < products.Length; i++)
+                            {
+                                if (products[i].remainingStock <= 5)
+                                {
+                                    if (products[i].remainingStock == 0)
+                                    {
+                                        Console.WriteLine($"{products[i].name} has no stock left.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"{products[i].name} has only {products[i].remainingStock} stock/s left.");
+                                    }
+                                    lowStock = true;
+                                }
+                            }
+
+                            if (!lowStock)
+                            {
+                                Console.WriteLine(".No low remaining stock.");
+                            }
+
+                            Console.WriteLine("\n=== ORDER HISTORY ===");
+
+                            if (orderCount == 0)
+                            {
+                                Console.WriteLine("No orders yet.");
+                                break;
+                            }
+
+                            for (int i = 0; i < orderCount; i++)
+                            {
+                                Console.WriteLine(
+                                    $"Receipt #{orders[i].receiptNumber:D4} - Final Total: ₱{orders[i].finalTotal:F2} - Date: {orders[i].date}"
+                                );
+                            }
+                        }
+
+
+                        Console.WriteLine("\nCheckout complete!");
+
+                            string shopAgain;
+
+                            while (true)
+                            {
+                                Console.Write("\nDo You Want To Shop Again?(Y/N): ");
+                                shopAgain = Console.ReadLine().ToUpper().Trim();
+
+                                if (shopAgain == "Y" || shopAgain == "N")
+                                    break;
+
+                                Console.WriteLine("Invalid Input. Please Enter Y or N.");
+                            }
+
+                            if (shopAgain == "N")
+                            {
+                                Console.WriteLine("Thank you for shopping!");
+                                Console.WriteLine("Press Any Key To Exit...");
+                                Console.ReadKey();
+                                Environment.Exit(0);
+                            }
+
+                            showProducts = true;
+
+                            break;
+
+                    case 6:
+                        {
+                            Console.WriteLine("Thankyou For Shopping!");
+                            Console.WriteLine("Press Any Key to Close Shopping Cart System.");
+                            Console.ReadKey();
+                            break;
+                        }
                 }
             }while (menu != 6);
         }
@@ -515,6 +669,12 @@ namespace ConsoleApp5
             }
         }
 
+        class Order
+        {
+            public int receiptNumber;
+            public DateTime date;
+            public double finalTotal;
+        }
     }
 }
         
