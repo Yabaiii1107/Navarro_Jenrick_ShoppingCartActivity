@@ -1,10 +1,10 @@
-using system
+using System;
 
 namespace ConsoleApp5
 {
     class Program
     {
-        static void DisplayCartHeader
+        static void DisplayCartHeader()
         {
             Console.WriteLine("\nNo  | Name                      | Qty |   Price | Subtotal");
             Console.WriteLine("--------------------------------------------------------------------------");
