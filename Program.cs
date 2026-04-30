@@ -358,6 +358,119 @@ namespace ConsoleApp5
                             }
                         } while (cartMenu != 5);
                         break;
+
+                      case 3:
+                        {
+                            string searchName;
+
+                            while (true)
+                            {
+                                Console.WriteLine("\n=== SEARCH PRODUCT NAME ===");
+
+                                while (true)
+                                {
+                                    Console.Write("Enter Product Name to Search: ");
+                                    searchName = Console.ReadLine().ToLower().Trim();
+
+                                    if (!string.IsNullOrWhiteSpace(searchName))
+                                        break;
+
+                                    Console.WriteLine("Input Cannot be Empty.\n");
+                                }
+
+                                bool found = false;
+
+                                Console.WriteLine("\nID  | Name                      | Category           |   Price | Stock");
+                                Console.WriteLine("--------------------------------------------------------------------------");
+                      
+                                for (int i = 0; i < products.Length; i++)
+                                {
+                                    if (products[i].name.ToLower().Contains(searchName))
+                                    {
+                                        Console.WriteLine(
+                                            $"{products[i].id,-3} | {products[i].name,-25} | {products[i].category,-18} | ₱{products[i].price,8:F2} | {products[i].remainingStock,5}"
+                                        );
+
+                                        found = true;
+                                    }
+                                }
+
+                                if (found)
+                                {
+                                    break; 
+                                }
+
+                                Console.WriteLine("\nNo matching product found. Check if Spelling is Correct");
+                                break;
+                            }
+                            break;
+                        }
+
+                    case 4:
+                        int categoryChoice;
+                        string selectedCategory= "";
+
+                        while (true)
+                        {
+                            Console.WriteLine("\n=== SEARCH PRODUCT CATEGORY ===");
+                            Console.WriteLine("1. Food");
+                            Console.WriteLine("2. Clothing");
+                            Console.WriteLine("3. School Supplies");
+                            Console.WriteLine("4. Back");
+
+                            Console.Write("Enter Choice (1-4): ");
+                            if(!int.TryParse(Console.ReadLine(), out categoryChoice))
+                            {
+                                Console.WriteLine("Invalid Input. Please Enter a Number.");
+                                continue;
+                            }
+
+                            if (categoryChoice == 4)
+                            {
+                                Console.WriteLine("Returning to Main Menu...");
+                                break;
+                            }
+                                
+
+                            if (categoryChoice > 4)
+                            {
+                                Console.WriteLine("Invalid Input. Input must be a number ranging from 1-4 only.");
+                                continue;
+                            }
+
+                            switch (categoryChoice)
+                            {
+                                case 1:
+                                    selectedCategory = "Food";
+                                    break;
+                                case 2:
+                                    selectedCategory = "Clothing";
+                                    break;
+                                case 3:
+                                    selectedCategory = "School Supplies";
+                                    break;
+                            }
+
+                            bool found = false;
+
+                            Console.WriteLine("\nID  | Name                      | Category           |   Price | Stock");
+                            Console.WriteLine("--------------------------------------------------------------------------");
+
+                            for (int i = 0; i < products.Length; i++)
+                            {
+                                if(products[i].category == selectedCategory)
+                                {
+                                    products[i].DisplayProduct();
+                                    found = true;
+                                }
+                            }
+
+                            if (!found)
+                            {
+                                break;
+                            }
+                        }
+                        break;
                 }
             }while (menu != 6);
         }
@@ -401,6 +514,7 @@ namespace ConsoleApp5
                 );
             }
         }
+
     }
 }
         
