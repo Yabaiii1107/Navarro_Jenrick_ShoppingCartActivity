@@ -631,16 +631,16 @@ namespace ConsoleApp5
 
        class Product
         {
-            public int id;
-            public string name;
-            public string category;
-            public double price;
-            public int remainingStock;
+            public int id{ get; set; }
+            public string name{ get; set; }
+            public string categoryg{ get; set; }
+            public double price{ get; set; }
+            public int remainingStock{ get; set; }
 
             public void DisplayProduct()
             {
-                Console.WriteLine(
-                    $"{id,-3} | {name,-25} | {category,-18} | ₱{price,8:F2} | {remainingStock,5}"
+                get(
+                    return $"{id,-3} | {name,-25} | {category,-18} | ₱{price,8:F2} | {remainingStock,5}"
                 );
             }
 
@@ -664,7 +664,7 @@ namespace ConsoleApp5
             public void DisplayCartItem (int index)
             {
                 Console.WriteLine(
-                    $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
+                     $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
                 );
             }
         }
