@@ -637,11 +637,16 @@ namespace ConsoleApp5
             public double price{ get; set; }
             public int remainingStock{ get; set; }
 
-            public void DisplayProduct()
+            public string ProductDetails()
             {
                 get(
                     return $"{id,-3} | {name,-25} | {category,-18} | ₱{price,8:F2} | {remainingStock,5}"
                 );
+            }
+
+            public void DisplayProduct()
+            {
+                Console.WriteLine(ProductDetails);
             }
 
             public bool HasEnoughStock (int qty)
@@ -657,15 +662,20 @@ namespace ConsoleApp5
 
         class CartItem
         {
-            public Product product;
-            public int quantity;
-            public double subTotal;
+            public Product product{ get; set; }
+            public int quantity{ get; set; }
+            public double subTotal{ get; set; }
 
-            public void DisplayCartItem (int index)
+            public void CartDetails (int index)
             {
-                Console.WriteLine(
-                     $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
+                get(
+                    return $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
                 );
+            }
+            
+            public void DisplayCartItem(int index)
+            {
+                Console.WriteLine($"{index + 1,-3} | {CartDetails}");
             }
         }
 
