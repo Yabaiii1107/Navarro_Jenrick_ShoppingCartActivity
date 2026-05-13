@@ -4,7 +4,7 @@ namespace ConsoleApp5
 {
     class Program
     {
-        static void DisplayCartHeader()
+          static void DisplayCartHeader()
         {
             Console.WriteLine("\nNo  | Name                      | Qty |   Price | Subtotal");
             Console.WriteLine("--------------------------------------------------------------------------");
@@ -584,9 +584,7 @@ namespace ConsoleApp5
 
                             for (int i = 0; i < orderCount; i++)
                             {
-                                Console.WriteLine(
-                                    $"Receipt #{orders[i].receiptNumber:D4} - Final Total: ₱{orders[i].finalTotal:F2} - Date: {orders[i].date}"
-                                );
+                               Console.WriteLine(orders[i].OrderDetails);
                             }
                         }
 
@@ -633,15 +631,16 @@ namespace ConsoleApp5
         {
             public int id{ get; set; }
             public string name{ get; set; }
-            public string categoryg{ get; set; }
+            public string category{ get; set; }
             public double price{ get; set; }
             public int remainingStock{ get; set; }
 
-            public string ProductDetails()
+            public string ProductDetails
             {
-                get(
-                    return $"{id,-3} | {name,-25} | {category,-18} | ₱{price,8:F2} | {remainingStock,5}"
-                );
+                get
+                {
+                    return $"{id,-3} | {name,-25} | {category,-18} | ₱{price,8:F2} | {remainingStock,5}";
+                }
             }
 
             public void DisplayProduct()
@@ -666,24 +665,31 @@ namespace ConsoleApp5
             public int quantity{ get; set; }
             public double subTotal{ get; set; }
 
-            public void CartDetails (int index)
+            public string CartDetails (int index)
             {
-                get(
-                    return $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}"
-                );
+               return $"{index + 1,-3} | {product.name,-25} | {quantity,3} | ₱{product.price,8:F2} | ₱{subTotal,8:F2}";
             }
             
             public void DisplayCartItem(int index)
             {
-                Console.WriteLine($"{index + 1,-3} | {CartDetails}");
+                Console.WriteLine(CartDetails(index));
             }
         }
 
         class Order
         {
-            public int receiptNumber;
-            public DateTime date;
-            public double finalTotal;
+            public int receiptNumber{ get; set; }
+            public DateTime date{ get; set; }
+            public double finalTotal{ get; set; }
+        
+
+            public string OrderDetails
+            {
+                get
+                {
+                    return $"Receipt #{receiptNumber:D4} - Final Total: ₱{finalTotal:F2} - Date: {date}";
+                }
+            }
         }
     }
 }
